@@ -523,10 +523,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                             StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance
                                   .collection('Review')
-                                  .snapshots()
-                                  .where('relatedGettingReviewUser',
-                                      isEqualTo:
-                                          widget.selectedRestaurants.uid),
+                                  .snapshots(),
                               builder: (BuildContext context,
                                   AsyncSnapshot<QuerySnapshot> snapshot) {
                                 if (snapshot.connectionState ==

@@ -3,22 +3,21 @@ import 'package:flutter_practise/Models/users.dart';
 class Review {
   String? review;
   String? date;
-  // User? relatedGivingReviewUser;
-  // User? relatedGettingReviewUser;
+  String? relatedGivingReviewUser;
+  String? relatedGettingReviewUser;
 
-  Review({
-    this.review,
-    this.date,
-    // this.relatedGettingReviewUser,
-    // this.relatedGivingReviewUser
-  });
+  Review(
+      {this.review,
+      this.date,
+      this.relatedGettingReviewUser,
+      this.relatedGivingReviewUser});
 
   factory Review.fromMap(map) {
     return Review(
       review: map['review'],
       date: map['date'],
-      // relatedGettingReviewUser: map['relatedGettingReviewUser'],
-      // relatedGivingReviewUser: map['relatedGivingReviewUser'],
+      relatedGettingReviewUser: map['relatedGettingReviewUser'],
+      relatedGivingReviewUser: map['relatedGivingReviewUser'],
     );
   }
 
@@ -26,8 +25,8 @@ class Review {
     return {
       'review': review,
       'date': date,
-      // 'relatedGettingReviewUser': relatedGettingReviewUser,
-      // 'relatedGivingReviewUser': relatedGivingReviewUser,
+      'relatedGettingReviewUser': relatedGettingReviewUser,
+      'relatedGivingReviewUser': relatedGivingReviewUser,
     };
   }
 }
