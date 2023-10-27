@@ -7,8 +7,9 @@ class Restaurants {
   String? rating;
   String? image;
   String? restOrCoffee;
-  DateTime? openingTime;
-  DateTime? closingTime;
+  String? openingTime;
+  String? closingTime;
+  String? noOfReviews;
 
   Restaurants(
       {this.uid,
@@ -20,7 +21,8 @@ class Restaurants {
       this.image,
       this.restOrCoffee,
       this.closingTime,
-      this.openingTime});
+      this.openingTime,
+      this.noOfReviews});
 
   //Receiving data from server
   factory Restaurants.fromMap(map) {
@@ -31,10 +33,11 @@ class Restaurants {
         address: map['address'],
         avgPrice: map['avgPrice'],
         rating: map['rating'],
-        image: map['images'],
+        image: map['image'],
         restOrCoffee: map['restOrCoffee'],
         closingTime: map['closingTime'],
-        openingTime: map['openingTime']);
+        openingTime: map['openingTime'],
+        noOfReviews: map['noOfReviews']);
   }
 
   //send data to our server
@@ -46,10 +49,11 @@ class Restaurants {
       'address': address,
       'avgPrice': avgPrice,
       'rating': rating,
-      'images': image,
+      'image': image,
       'restOrCoffee': restOrCoffee,
       'closingTime': closingTime,
       'openingTime': openingTime,
+      'noOfReviews': noOfReviews,
     };
   }
 }

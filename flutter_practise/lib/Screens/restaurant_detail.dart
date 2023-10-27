@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_practise/Models/restaurants.dart';
+import 'package:flutter_practise/Models/reviews.dart';
+import 'package:flutter_practise/Testing/google_map.dart';
+import 'package:flutter_practise/Widgets/simple_google_map.dart';
 import 'package:flutter_practise/utils/colors.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -48,10 +52,10 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 1,
                         height: 200,
-                        child: const Image(
+                        child: Image(
                             fit: BoxFit.cover,
                             image: NetworkImage(
-                                'https://firebasestorage.googleapis.com/v0/b/flutterpractise-6898a.appspot.com/o/great-for-sharing.jpg?alt=media&token=293f7b33-ee27-4f90-a7fc-e04e33d785c5&_gl=1*1330j4f*_ga*MTIxMjcyNzYwNy4xNjk4MTI2MzMz*_ga_CW55HF8NVT*MTY5ODI5ODkyMS4xMS4xLjE2OTgyOTg5OTEuNTEuMC4w')),
+                                widget.selectedRestaurants.image.toString())),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -115,21 +119,26 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                               )),
                               Column(
                                 children: [
-                                  const Text(
-                                    "4.4",
+                                  Text(
+                                    widget.selectedRestaurants.rating
+                                        .toString(),
                                     style: TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.w500),
                                   ),
                                   // Text("Reviews "),
                                   RichText(
-                                    text: const TextSpan(
+                                    text: TextSpan(
                                       text: 'Review ',
                                       style: TextStyle(
                                         color: Colors.grey,
                                       ),
                                       children: <TextSpan>[
-                                        TextSpan(text: '1', style: TextStyle()),
+                                        TextSpan(
+                                            text: widget
+                                                .selectedRestaurants.noOfReviews
+                                                .toString(),
+                                            style: TextStyle()),
                                         // TextSpan(text: ' world!'),
                                       ],
                                     ),
@@ -144,12 +153,15 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                           Row(
                             children: [
                               RichText(
-                                text: const TextSpan(
+                                text: TextSpan(
                                   text: 'Open: ',
                                   style: TextStyle(color: Colors.black),
                                   children: <TextSpan>[
                                     TextSpan(
-                                        text: '6:00 PM', style: TextStyle()),
+                                        text: widget
+                                            .selectedRestaurants.openingTime
+                                            .toString(),
+                                        style: TextStyle()),
                                     // TextSpan(text: ' world!'),
                                   ],
                                 ),
@@ -158,12 +170,15 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                                 width: 8,
                               ),
                               RichText(
-                                text: const TextSpan(
+                                text: TextSpan(
                                   text: 'Close: ',
                                   style: TextStyle(color: Colors.black),
                                   children: <TextSpan>[
                                     TextSpan(
-                                        text: '9:30 AM', style: TextStyle()),
+                                        text: widget
+                                            .selectedRestaurants.closingTime
+                                            .toString(),
+                                        style: TextStyle()),
                                     // TextSpan(text: ' world!'),
                                   ],
                                 ),
@@ -174,14 +189,15 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                             height: 8,
                           ),
                           RichText(
-                            text: const TextSpan(
-                              text: '15.0',
+                            text: TextSpan(
+                              text: widget.selectedRestaurants.avgPrice
+                                  .toString(),
                               style: TextStyle(color: Colors.black),
                               children: <TextSpan>[
+                                TextSpan(text: '.0', style: TextStyle()),
                                 TextSpan(text: ' SAR ', style: TextStyle()),
                                 TextSpan(
-                                    text: 'Average Price', style: TextStyle()),
-                                // TextSpan(text: ' world!'),
+                                    text: "Average Price", style: TextStyle()),
                               ],
                             ),
                           ),
@@ -224,7 +240,10 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                                 size: 25,
                                 color: InternalYellow,
                               ),
-                              const Expanded(child: Text("Address"))
+                              Expanded(
+                                  child: Text(
+                                widget.selectedRestaurants.address.toString(),
+                              ))
                             ],
                           ),
                           const SizedBox(
@@ -235,11 +254,14 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                           const SizedBox(
                             height: 5,
                           ),
+
                           SizedBox(
                               width: MediaQuery.of(context).size.width * 1,
-                              child: const Image(
+                              height: 180,
+                              child: Image(
                                   fit: BoxFit.cover,
                                   image: AssetImage("images/map_pic.png")))
+                          // SimpleGoogleMap()
                         ],
                       ),
                     )
@@ -491,12 +513,54 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                       const SizedBox(
                         height: 50,
                       ),
-                      const SingleChildScrollView(
+                      SingleChildScrollView(
                         scrollDirection: Axis.vertical,
                         child: Column(
                           children: [
-                            CustomerReviewsWidget(),
-                            CustomerReviewsWidget(),
+                            // CustomerReviewsWidget(
+                            //   selectedRest: widget.selectedRestaurants,
+                            // ),
+                            StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('Review')
+                                  .snapshots()
+                                  .where('relatedGettingReviewUser',
+                                      isEqualTo:
+                                          widget.selectedRestaurants.uid),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const CircularProgressIndicator();
+                                }
+                                if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                }
+
+                                if (!snapshot.hasData) {
+                                  return const Text('No data found');
+                                }
+
+                                final List<Review> reviews = snapshot.data!.docs
+                                    .map((DocumentSnapshot document) {
+                                  return Review.fromMap(
+                                      document.data() as Map<String, dynamic>);
+                                }).toList();
+
+                                return SizedBox(
+                                  width: MediaQuery.of(context).size.width * 1,
+                                  height: MediaQuery.of(context).size.width * 1,
+                                  child: ListView.builder(
+                                    // scrollDirection: Axis.horizontal,
+                                    itemCount: reviews.length,
+                                    itemBuilder: (context, index) {
+                                      return CustomerReviewsWidget(
+                                          reviews: reviews[index]);
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
                           ],
                         ),
                       )
@@ -511,9 +575,9 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
 }
 
 class CustomerReviewsWidget extends StatelessWidget {
-  const CustomerReviewsWidget({
-    super.key,
-  });
+  const CustomerReviewsWidget({super.key, required this.reviews});
+  final Review reviews;
+  // final String review;
 
   @override
   Widget build(BuildContext context) {
@@ -569,9 +633,9 @@ class CustomerReviewsWidget extends StatelessWidget {
           const SizedBox(
             height: 4,
           ),
-          const Text(
+          Text(
             textAlign: TextAlign.justify,
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+            reviews.review.toString(),
             style: TextStyle(fontSize: 11),
           )
         ],
