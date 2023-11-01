@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_practise/Models/restaurants.dart';
 import 'package:flutter_practise/Screens/login.dart';
 import 'package:flutter_practise/Screens/restaurant_detail.dart';
+import 'package:flutter_practise/Screens/upload_resturant.dart';
 import 'package:flutter_practise/Widgets/categories_widget.dart';
 import 'package:flutter_practise/Widgets/restaurants_card.dart';
 import 'package:flutter_practise/Widgets/simple_google_map.dart';
@@ -175,13 +176,22 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        const Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "Categories",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w600),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            UploadRestaurant()));
+                              },
+                              child: Text(
+                                "Categories",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w600),
+                              ),
                             ),
                             Text(
                               "View All",

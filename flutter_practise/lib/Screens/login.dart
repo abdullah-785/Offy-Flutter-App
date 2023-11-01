@@ -107,10 +107,12 @@ class _LoginState extends State<Login> {
                                       builder: (_) => const HomePage()))
                             });
                   } catch (e) {
-                    print("object");
+                    print(e);
+
                     setState(() {
-                      isLoading = true;
+                      isLoading = false;
                     });
+                    return;
                   }
                 },
                 child: isLoading
