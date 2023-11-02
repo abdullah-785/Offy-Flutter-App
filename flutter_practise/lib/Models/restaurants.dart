@@ -10,6 +10,7 @@ class Restaurants {
   String? openingTime;
   String? closingTime;
   String? noOfReviews;
+  String? role;
 
   Restaurants(
       {this.uid,
@@ -22,7 +23,8 @@ class Restaurants {
       this.restOrCoffee,
       this.closingTime,
       this.openingTime,
-      this.noOfReviews});
+      this.noOfReviews,
+      this.role});
 
   //Receiving data from server
   factory Restaurants.fromMap(map) {
@@ -37,7 +39,8 @@ class Restaurants {
         restOrCoffee: map['restOrCoffee'],
         closingTime: map['closingTime'],
         openingTime: map['openingTime'],
-        noOfReviews: map['noOfReviews']);
+        noOfReviews: map['noOfReviews'],
+        role: map['role']);
   }
 
   //send data to our server
@@ -45,7 +48,7 @@ class Restaurants {
     return {
       'uid': uid,
       'name': name,
-      'restaurantLevel': level,
+      'level': level,
       'address': address,
       'avgPrice': avgPrice,
       'rating': rating,
@@ -54,6 +57,7 @@ class Restaurants {
       'closingTime': closingTime,
       'openingTime': openingTime,
       'noOfReviews': noOfReviews,
+      'role': role
     };
   }
 }

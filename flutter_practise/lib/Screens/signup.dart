@@ -1,25 +1,29 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_practise/Models/users.dart';
 import 'package:flutter_practise/Screens/home_page.dart';
-import 'package:flutter_practise/Screens/signup.dart';
+import 'package:flutter_practise/Screens/login.dart';
 
-class Login extends StatefulWidget {
+class SignUp extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _LoginState extends State<Login> {
+class _SignUpState extends State<SignUp> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswrordController =
+      TextEditingController();
+
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   title: const Text("Login Page"),
-      // ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -40,6 +44,21 @@ class _LoginState extends State<Login> {
             //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             // ),
             Padding(
+              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+              child: TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 5.0, horizontal: 10.0),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                  labelText: 'Name',
+                  hintText: 'Enter name',
+                ),
+                keyboardType: TextInputType.text,
+              ),
+            ),
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
                 controller: _emailController,
@@ -50,6 +69,22 @@ class _LoginState extends State<Login> {
                         borderRadius: BorderRadius.all(Radius.circular(20.0))),
                     labelText: 'Email',
                     hintText: 'abc@gmail.com'),
+                keyboardType: TextInputType.emailAddress,
+              ),
+            ),
+            Padding(
+              padding:
+                  EdgeInsets.only(left: 15.0, right: 15.0, top: 15, bottom: 0),
+              child: TextField(
+                controller: _phoneController,
+                decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 5.0, horizontal: 10.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                    labelText: 'Phone',
+                    hintText: 'Enter Phone Number'),
+                keyboardType: TextInputType.phone,
               ),
             ),
             Padding(
@@ -59,12 +94,31 @@ class _LoginState extends State<Login> {
                 controller: _passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
+                    suffix: Icon(Icons.remove_red_eye_rounded),
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 5.0, horizontal: 10.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20.0))),
                     labelText: 'Password',
                     hintText: 'Enter secure password'),
+                keyboardType: TextInputType.text,
+              ),
+            ),
+            Padding(
+              padding:
+                  EdgeInsets.only(left: 15.0, right: 15.0, top: 15, bottom: 0),
+              child: TextField(
+                controller: _confirmPasswrordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                    suffix: Icon(Icons.remove_red_eye_rounded),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 5.0, horizontal: 10.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                    labelText: 'Confirm Password',
+                    hintText: 'Confirm password'),
+                keyboardType: TextInputType.text,
               ),
             ),
             TextButton(
@@ -94,19 +148,36 @@ class _LoginState extends State<Login> {
                     setState(() {
                       isLoading = true;
                     });
-                    _auth
-                        .signInWithEmailAndPassword(
-                            email: _emailController.text,
-                            password: _passwordController.text)
-                        .then((value) => {
-                              setState(() {
-                                isLoading = true;
-                              }),
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const HomePage()))
-                            });
+
+                    if (_passwordController.text ==
+                        _confirmPasswrordController.text) {
+                      _auth.createUserWithEmailAndPassword(
+                          email: _emailController.text,
+                          password: _passwordController.text);
+
+                      UserModel userModel = UserModel();
+                      User? user = _auth.currentUser;
+
+                      userModel.uid = user!.uid;
+                      userModel.name = _nameController.text;
+                      userModel.email = _emailController.text;
+                      userModel.phone = _phoneController.text;
+                      userModel.password = _passwordController.text;
+
+                      FirebaseFirestore.instance
+                          .collection("users")
+                          .doc()
+                          .set(userModel.toMap())
+                          .then((value) => {
+                                setState(() {
+                                  isLoading = true;
+                                }),
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => const HomePage()))
+                              });
+                    }
                   } catch (e) {
                     print(e);
 
@@ -133,9 +204,9 @@ class _LoginState extends State<Login> {
             InkWell(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SignUp()));
+                      MaterialPageRoute(builder: (context) => Login()));
                 },
-                child: Text('New User? Create Account'))
+                child: const Text('Have Account? Login'))
           ],
         ),
       ),

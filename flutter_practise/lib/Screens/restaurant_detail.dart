@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_practise/Components/post_review.dart';
 import 'package:flutter_practise/Models/restaurants.dart';
 import 'package:flutter_practise/Models/reviews.dart';
 import 'package:flutter_practise/Testing/google_map.dart';
@@ -19,6 +21,9 @@ class RestaurantDetail extends StatefulWidget {
 class _RestaurantDetailState extends State<RestaurantDetail> {
   @override
   Widget build(BuildContext context) {
+    DocumentReference docRef = FirebaseFirestore.instance
+        .collection("Restaurants")
+        .doc(widget.selectedRestaurants.uid);
     return DefaultTabController(
       initialIndex: 0,
       length: 3,
@@ -52,10 +57,19 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 1,
                         height: 200,
-                        child: Image(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                                widget.selectedRestaurants.image.toString())),
+                        child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: widget.selectedRestaurants.image.toString(),
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
+
+                        // Image(
+                        //     fit: BoxFit.cover,
+                        //     image: NetworkImage(
+                        //         widget.selectedRestaurants.image.toString())),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -120,8 +134,9 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                               Column(
                                 children: [
                                   Text(
-                                    widget.selectedRestaurants.rating
-                                        .toString(),
+                                    // widget.selectedRestaurants.rating
+                                    //     .toString(),
+                                    "4.5",
                                     style: TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.w500),
@@ -135,9 +150,10 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                                       ),
                                       children: <TextSpan>[
                                         TextSpan(
-                                            text: widget
-                                                .selectedRestaurants.noOfReviews
-                                                .toString(),
+                                            text: "2",
+                                            // text: widget
+                                            //     .selectedRestaurants.noOfReviews
+                                            //     .toString(),
                                             style: TextStyle()),
                                         // TextSpan(text: ' world!'),
                                       ],
@@ -337,10 +353,29 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                           height: 130,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: Image(
-                                fit: BoxFit.cover,
-                                image: NetworkImage(
-                                    "https://firebasestorage.googleapis.com/v0/b/flutterpractise-6898a.appspot.com/o/great-for-sharing.jpg?alt=media&token=293f7b33-ee27-4f90-a7fc-e04e33d785c5&_gl=1*1330j4f*_ga*MTIxMjcyNzYwNy4xNjk4MTI2MzMz*_ga_CW55HF8NVT*MTY5ODI5ODkyMS4xMS4xLjE2OTgyOTg5OTEuNTEuMC4w")),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  "https://firebasestorage.googleapis.com/v0/b/flutterpractise-6898a.appspot.com/o/great-for-sharing.jpg?alt=media&token=293f7b33-ee27-4f90-a7fc-e04e33d785c5&_gl=1*1330j4f*_ga*MTIxMjcyNzYwNy4xNjk4MTI2MzMz*_ga_CW55HF8NVT*MTY5ODI5ODkyMS4xMS4xLjE2OTgyOTg5OTEuNTEuMC4w",
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                    // colorFilter: ColorFilter.mode(
+                                    //     Colors.red, BlendMode.)
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) => spinkit,
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
+
+                            // Image(
+                            //     fit: BoxFit.cover,
+                            //     image: NetworkImage(
+                            //         "https://firebasestorage.googleapis.com/v0/b/flutterpractise-6898a.appspot.com/o/great-for-sharing.jpg?alt=media&token=293f7b33-ee27-4f90-a7fc-e04e33d785c5&_gl=1*1330j4f*_ga*MTIxMjcyNzYwNy4xNjk4MTI2MzMz*_ga_CW55HF8NVT*MTY5ODI5ODkyMS4xMS4xLjE2OTgyOTg5OTEuNTEuMC4w")),
                           ),
                         ),
                         Container(
@@ -411,159 +446,175 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    "4.4",
-                    style: TextStyle(fontSize: 42, fontWeight: FontWeight.w500),
-                  ),
-                  RatingBarIndicator(
-                      rating: 4.4,
-                      itemCount: 5,
-                      itemSize: 24.0,
-                      itemBuilder: (context, _) => const Icon(
-                            Icons.star,
-                            color: Color.fromARGB(255, 240, 163, 35),
-                          )),
-                  RichText(
-                    text: const TextSpan(
-                      text: 'Based on ',
-                      style: TextStyle(color: Colors.black, fontSize: 10),
-                      children: <TextSpan>[
-                        TextSpan(text: '1', style: TextStyle(fontSize: 10)),
-                        TextSpan(
-                            text: ' Reviews', style: TextStyle(fontSize: 10)),
-                      ],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 1,
-                    height: 2,
-                    color: Colors.grey[200],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Column(
-                    // mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Rate and review",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w500),
+                    const Text(
+                      "4.4",
+                      style:
+                          TextStyle(fontSize: 42, fontWeight: FontWeight.w500),
+                    ),
+                    RatingBarIndicator(
+                        rating: 4.4,
+                        itemCount: 5,
+                        itemSize: 24.0,
+                        itemBuilder: (context, _) => const Icon(
+                              Icons.star,
+                              color: Color.fromARGB(255, 240, 163, 35),
+                            )),
+                    RichText(
+                      text: const TextSpan(
+                        text: 'Based on ',
+                        style: TextStyle(color: Colors.black, fontSize: 10),
+                        children: <TextSpan>[
+                          TextSpan(text: '1', style: TextStyle(fontSize: 10)),
+                          TextSpan(
+                              text: ' Reviews', style: TextStyle(fontSize: 10)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 1,
+                      height: 2,
+                      color: Colors.grey[200],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Column(
+                      // mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Rate and review",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
                         ),
-                      ),
-                      const Text("Share your experience to help others",
-                          style: TextStyle(
-                            fontSize: 12,
-                          )),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(
-                                          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?cs=srgb&dl=pexels-pixabay-220453.jpg&fm=jpg")),
-                                  shape: BoxShape.circle,
-                                  color: Colors.blue,
+                        const Text("Share your experience to help others",
+                            style: TextStyle(
+                              fontSize: 12,
+                            )),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                        image: CachedNetworkImageProvider(
+                                            "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?cs=srgb&dl=pexels-pixabay-220453.jpg&fm=jpg")),
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                const Text(
+                                  "Abdullah",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15),
+                                ),
+                              ],
+                            ),
+                            InkWell(
+                              onTap: () => showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                  content: PostReview(resturantsRef: docRef),
                                 ),
                               ),
-                              const SizedBox(
-                                width: 5,
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 110,
+                                height: 35,
+                                decoration: BoxDecoration(
+                                    color:
+                                        const Color.fromARGB(255, 240, 163, 35),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Text(
+                                  "Post Review",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
-                              const Text(
-                                "Abdullah",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15),
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: Column(
+                            children: [
+                              // CustomerReviewsWidget(
+                              //   selectedRest: widget.selectedRestaurants,
+                              // ),
+                              StreamBuilder<QuerySnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection('Review')
+                                    .snapshots(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  }
+                                  if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  }
+
+                                  if (!snapshot.hasData) {
+                                    return const Text('No data found');
+                                  }
+
+                                  final List<Review> reviews = snapshot
+                                      .data!.docs
+                                      .map((DocumentSnapshot document) {
+                                    return Review.fromMap(document.data()
+                                        as Map<String, dynamic>);
+                                  }).toList();
+
+                                  return SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width * 1,
+                                    height:
+                                        MediaQuery.of(context).size.width * 1,
+                                    child: ListView.builder(
+                                      // scrollDirection: Axis.horizontal,
+                                      itemCount: reviews.length,
+                                      itemBuilder: (context, index) {
+                                        return CustomerReviewsWidget(
+                                            reviews: reviews[index]);
+                                      },
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
-                          Container(
-                            alignment: Alignment.center,
-                            width: 110,
-                            height: 35,
-                            decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 240, 163, 35),
-                                borderRadius: BorderRadius.circular(10)),
-                            child: const Text(
-                              "Post Review",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Column(
-                          children: [
-                            // CustomerReviewsWidget(
-                            //   selectedRest: widget.selectedRestaurants,
-                            // ),
-                            StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('Review')
-                                  .snapshots(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                }
-                                if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                }
-
-                                if (!snapshot.hasData) {
-                                  return const Text('No data found');
-                                }
-
-                                final List<Review> reviews = snapshot.data!.docs
-                                    .map((DocumentSnapshot document) {
-                                  return Review.fromMap(
-                                      document.data() as Map<String, dynamic>);
-                                }).toList();
-
-                                return SizedBox(
-                                  width: MediaQuery.of(context).size.width * 1,
-                                  height: MediaQuery.of(context).size.width * 1,
-                                  child: ListView.builder(
-                                    // scrollDirection: Axis.horizontal,
-                                    itemCount: reviews.length,
-                                    itemBuilder: (context, index) {
-                                      return CustomerReviewsWidget(
-                                          reviews: reviews[index]);
-                                    },
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  )
-                ],
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
             )
           ])),
@@ -630,10 +681,13 @@ class CustomerReviewsWidget extends StatelessWidget {
           const SizedBox(
             height: 4,
           ),
-          Text(
-            textAlign: TextAlign.justify,
-            reviews.review.toString(),
-            style: TextStyle(fontSize: 11),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              textAlign: TextAlign.justify,
+              reviews.review.toString(),
+              style: TextStyle(fontSize: 11),
+            ),
           )
         ],
       ),

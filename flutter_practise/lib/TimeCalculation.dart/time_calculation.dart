@@ -23,23 +23,6 @@ class _WorkingHoursCalculatorState extends State<WorkingHoursCalculator> {
     });
   }
 
-  // DateTime timeIn = DateTime.parse(checkIn as String);
-  // DateTime timeOut = DateTime.parse(checkout as String);
-
-  // Duration workDuration = timeOut.difference(timeIn);
-  // int hours = workDuration.inHours;
-  // int minutes = workDuration.inMinutes.remainder(60);
-
-  // String workingHours = "$hours hours $minutes minutes";
-  // return workingHours;
-
-  // final duration1 = checkout?.difference(checkIn!);
-  // // final duration1 = duration?.difference(breakTime);
-  // final hours = duration1?.inHours;
-  // final minutes = duration1?.inMinutes.remainder(60);
-
-  // return '$hours hours and $minutes minutes';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

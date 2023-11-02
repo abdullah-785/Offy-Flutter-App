@@ -1,4 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_practise/utils/colors.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class RestaurantCard extends StatelessWidget {
   const RestaurantCard({
@@ -17,6 +20,7 @@ class RestaurantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print(level);
     return Padding(
       padding: const EdgeInsets.only(right: 20.0),
       child: Container(
@@ -35,9 +39,25 @@ class RestaurantCard extends StatelessWidget {
               height: 200,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image(fit: BoxFit.cover, image: NetworkImage(image)),
+                child: CachedNetworkImage(
+                  imageUrl: image,
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                        // colorFilter: ColorFilter.mode(
+                        //     Colors.red, BlendMode.)
+                      ),
+                    ),
+                  ),
+                  placeholder: (context, url) => spinkit,
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
               ),
             ),
+
+            // Image(fit: BoxFit.cover, image: NetworkImage(image))
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(

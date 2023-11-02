@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_practise/Models/users.dart';
 
 class Review {
   String? review;
   String? date;
-  String? relatedGivingReviewUser;
-  String? relatedGettingReviewUser;
+  DocumentReference? relatedGivingReviewUser;
+  DocumentReference? relatedGettingReviewUser;
 
   Review(
       {this.review,
@@ -16,8 +17,8 @@ class Review {
     return Review(
       review: map['review'],
       date: map['date'],
-      relatedGettingReviewUser: map['relatedGettingReviewUser'],
-      relatedGivingReviewUser: map['relatedGivingReviewUser'],
+      // relatedGettingReviewUser: map['relatedGettingReviewUser'],
+      // relatedGivingReviewUser: map['relatedGivingReviewUser'],
     );
   }
 

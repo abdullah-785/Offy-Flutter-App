@@ -47,6 +47,9 @@ dependencies:
   flutter_polyline_points: ^2.0.0 
   file_picker: ^6.0.0
   uuid: ^4.1.0
+  cached_network_image: ^3.3.0
+  flutter_spinkit: ^5.2.0
+  flutter_blurhash: ^0.7.0
 
 dev_dependencies:
   flutter_test:

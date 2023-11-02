@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_practise/Models/restaurants.dart';
+import 'package:flutter_practise/Screens/home_page.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
@@ -171,6 +172,9 @@ class _UploadRestaurantState extends State<UploadRestaurant> {
                           // Fluttertoast.showToast(msg: "Please Select an Image");
                           return;
                         }
+                        setState(() {
+                          isLoading = true;
+                        });
 
                         try {
                           final ref = FirebaseStorage.instance
@@ -184,23 +188,28 @@ class _UploadRestaurantState extends State<UploadRestaurant> {
                           User? user = _auth.currentUser;
                           Restaurants restaurants = Restaurants();
 
-                          restaurants.uid = user!.uid;
+                          restaurants.uid = restaurants.uid;
                           restaurants.image = imageUrl;
-                          restaurants.name = _nameController.toString();
-                          restaurants.level = _levelController.toString();
-                          restaurants.address = _addressController.toString();
-                          restaurants.avgPrice = _avgPriceController.toString();
-                          restaurants.restOrCoffee = _typeController.toString();
-                          restaurants.openingTime =
-                              _openingTimeController.toString();
-                          restaurants.closingTime =
-                              _closingTimeController.toString();
-                          String postId = Uuid().v4();
+                          restaurants.name = _nameController.text;
+                          restaurants.level = _levelController.text;
+                          restaurants.address = _addressController.text;
+                          restaurants.avgPrice = _avgPriceController.text;
+                          restaurants.restOrCoffee = _typeController.text;
+                          restaurants.openingTime = _openingTimeController.text;
+                          restaurants.closingTime = _closingTimeController.text;
+                          // String postId = Uuid().v4();
 
                           FirebaseFirestore.instance
                               .collection("Restaurants")
-                              .doc(postId)
+                              .doc()
                               .set(restaurants.toMap());
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()));
+                          setState(() {
+                            isLoading = false;
+                          });
                         } catch (e) {
                           print("object");
                         }

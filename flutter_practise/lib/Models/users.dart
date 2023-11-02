@@ -1,27 +1,30 @@
-class User {
+class UserModel {
   String? uid;
   String? name;
   String? email;
   String? password;
   String? phone;
   String? address;
+  String? role;
 
-  User(
+  UserModel(
       {this.uid,
       this.name,
       this.email,
       this.password,
       this.phone,
-      this.address});
+      this.address,
+      this.role});
 
-  factory User.fromMap(map) {
-    return User(
+  factory UserModel.fromMap(map) {
+    return UserModel(
         uid: map['uid'],
         name: map['name'],
         email: map['email'],
         password: map['password'],
         phone: map['phone'],
-        address: map['address']);
+        address: map['address'],
+        role: map['role']);
   }
 
   Map<String, dynamic> toMap() {
@@ -32,6 +35,7 @@ class User {
       'password': password,
       'phone': phone,
       'address': address,
+      'role': role
     };
   }
 }
