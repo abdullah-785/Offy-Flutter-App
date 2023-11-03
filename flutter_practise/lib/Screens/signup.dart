@@ -18,7 +18,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _confirmPasswrordController =
       TextEditingController();
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
@@ -143,7 +143,7 @@ class _SignUpState extends State<SignUp> {
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),
                             side: BorderSide(color: Colors.blue)))),
-                onPressed: () {
+                onPressed: () async {
                   try {
                     setState(() {
                       isLoading = true;
@@ -151,26 +151,31 @@ class _SignUpState extends State<SignUp> {
 
                     if (_passwordController.text ==
                         _confirmPasswrordController.text) {
-                      _auth.createUserWithEmailAndPassword(
+                      await _auth.createUserWithEmailAndPassword(
                           email: _emailController.text,
                           password: _passwordController.text);
+
+                      FirebaseFirestore firebaseFirestore =
+                          FirebaseFirestore.instance;
 
                       UserModel userModel = UserModel();
                       User? user = _auth.currentUser;
 
                       userModel.uid = user!.uid;
                       userModel.name = _nameController.text;
-                      userModel.email = _emailController.text;
+                      userModel.email =
+                          _emailController.text.trim().toLowerCase();
                       userModel.phone = _phoneController.text;
                       userModel.password = _passwordController.text;
+                      userModel.role = "user";
 
-                      FirebaseFirestore.instance
+                      await firebaseFirestore
                           .collection("users")
-                          .doc()
+                          .doc(user.uid)
                           .set(userModel.toMap())
                           .then((value) => {
                                 setState(() {
-                                  isLoading = true;
+                                  isLoading = false;
                                 }),
                                 Navigator.push(
                                     context,
@@ -193,7 +198,7 @@ class _SignUpState extends State<SignUp> {
                         strokeWidth: 2,
                       )
                     : Text(
-                        'Login',
+                        'Sign Up',
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
               ),

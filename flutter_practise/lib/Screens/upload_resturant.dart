@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_practise/Models/restaurants.dart';
 import 'package:flutter_practise/Screens/home_page.dart';
+import 'package:flutter_practise/utils/colors.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
@@ -187,8 +188,9 @@ class _UploadRestaurantState extends State<UploadRestaurant> {
                           String imageUrl = await ref.getDownloadURL();
                           User? user = _auth.currentUser;
                           Restaurants restaurants = Restaurants();
+                          // String postId = Uuid().v4();
 
-                          restaurants.uid = restaurants.uid;
+                          // restaurants.uid = restaurants.uid;
                           restaurants.image = imageUrl;
                           restaurants.name = _nameController.text;
                           restaurants.level = _levelController.text;
@@ -197,26 +199,30 @@ class _UploadRestaurantState extends State<UploadRestaurant> {
                           restaurants.restOrCoffee = _typeController.text;
                           restaurants.openingTime = _openingTimeController.text;
                           restaurants.closingTime = _closingTimeController.text;
-                          // String postId = Uuid().v4();
 
-                          FirebaseFirestore.instance
+                          await FirebaseFirestore.instance
                               .collection("Restaurants")
                               .doc()
                               .set(restaurants.toMap());
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => HomePage()));
                           setState(() {
                             isLoading = false;
+                            _nameController.clear();
+                            _levelController.clear();
+                            _addressController.clear();
+                            _avgPriceController.clear();
+                            _typeController.clear();
+                            _openingTimeController.clear();
+                            _closingTimeController.clear();
                           });
                         } catch (e) {
                           print("object");
                         }
                       },
-                      child: isLoading
-                          ? CircularProgressIndicator()
-                          : Text("Upload")))
+                      child: isLoading ? spinkit : Text("Upload")))
             ],
           ),
         ),

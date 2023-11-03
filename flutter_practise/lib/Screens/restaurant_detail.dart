@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_practise/Components/post_review.dart';
 import 'package:flutter_practise/Models/restaurants.dart';
 import 'package:flutter_practise/Models/reviews.dart';
 import 'package:flutter_practise/Testing/google_map.dart';
+import 'package:flutter_practise/Widgets/customer_review_widget.dart';
 import 'package:flutter_practise/Widgets/simple_google_map.dart';
 import 'package:flutter_practise/utils/colors.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -30,29 +33,38 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
       child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.white,
               title: const Text(
                 "Restaurant Detials",
+                style: TextStyle(color: Colors.black),
               ),
-              bottom: const TabBar(tabs: [
-                Tab(
-                  text: "Detail",
-                  // icon: Icon(Icons.menu_book_rounded),
-                ),
-                Tab(
-                  text: "Menu",
-                  // icon: Icon(Icons.menu_book_rounded),
-                ),
-                Tab(
-                  text: "Reviews",
-                  // icon: Icon(Icons.menu_book_rounded),
-                ),
-              ])),
+              bottom: const TabBar(
+                  labelColor: Colors.black,
+                  indicatorColor: Colors.grey,
+                  tabs: [
+                    Tab(
+                      text: "Detail",
+                      // icon: Icon(Icons.menu_book_rounded),
+                    ),
+                    Tab(
+                      text: "Menu",
+                      // icon: Icon(Icons.menu_book_rounded),
+                    ),
+                    Tab(
+                      text: "Reviews",
+                      // icon: Icon(Icons.menu_book_rounded),
+                    ),
+                  ])),
           body: TabBarView(children: [
             SizedBox(
               width: MediaQuery.of(context).size.width * 1,
               child: Stack(children: [
                 Column(
                   children: [
+                    SizedBox(
+                      height: 0,
+                    ),
                     Stack(alignment: Alignment.bottomLeft, children: [
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 1,
@@ -65,11 +77,6 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                           errorWidget: (context, url, error) =>
                               Icon(Icons.error),
                         ),
-
-                        // Image(
-                        //     fit: BoxFit.cover,
-                        //     image: NetworkImage(
-                        //         widget.selectedRestaurants.image.toString())),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -618,79 +625,6 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
               ),
             )
           ])),
-    );
-  }
-}
-
-class CustomerReviewsWidget extends StatelessWidget {
-  const CustomerReviewsWidget({super.key, required this.reviews});
-  final Review reviews;
-  // final String review;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 30.0),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 35,
-                    height: 35,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                              "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?cs=srgb&dl=pexels-pixabay-220453.jpg&fm=jpg")),
-                      shape: BoxShape.circle,
-                      color: Colors.blue,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  Column(
-                    // mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Williams Ebenezer",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 14)),
-                      RatingBarIndicator(
-                          rating: 4.4,
-                          itemCount: 5,
-                          itemSize: 10.0,
-                          itemBuilder: (context, _) => const Icon(
-                                Icons.star,
-                                color: Color.fromARGB(255, 240, 163, 35),
-                              )),
-                    ],
-                  ),
-                ],
-              ),
-              Text(
-                "Sep 13, 2023",
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 4,
-          ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              textAlign: TextAlign.justify,
-              reviews.review.toString(),
-              style: TextStyle(fontSize: 11),
-            ),
-          )
-        ],
-      ),
     );
   }
 }

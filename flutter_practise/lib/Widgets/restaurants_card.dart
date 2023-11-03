@@ -1,22 +1,24 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_practise/utils/colors.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class RestaurantCard extends StatelessWidget {
-  const RestaurantCard({
-    super.key,
-    required this.name,
-    required this.level,
-    required this.address,
-    required this.rating,
-    required this.image,
-  });
+  const RestaurantCard(
+      {super.key,
+      required this.name,
+      required this.level,
+      required this.address,
+      required this.rating,
+      required this.image,
+      required this.avgPrice});
   final String name;
   final String level;
   final String address;
   final String rating;
   final String image;
+  final String avgPrice;
 
   @override
   Widget build(BuildContext context) {
@@ -24,19 +26,19 @@ class RestaurantCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 20.0),
       child: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: 135,
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
               color: Colors.grey.withOpacity(.3),
               offset: const Offset(3, 3),
               blurRadius: 5)
         ], color: Colors.white, borderRadius: BorderRadius.circular(8)),
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: 120,
         child: Row(
           children: [
             Container(
               width: 100,
-              height: 200,
+              height: 135,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: CachedNetworkImage(
@@ -51,7 +53,8 @@ class RestaurantCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  placeholder: (context, url) => spinkit,
+                  placeholder: (context, url) =>
+                      BlurHash(hash: "LYQ+AplVV=nj%%jDi]tR%KM}o#tl"),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               ),
@@ -81,10 +84,24 @@ class RestaurantCard extends StatelessWidget {
                   const SizedBox(
                     height: 5,
                   ),
-                  Expanded(
-                    child: Text(
-                      address,
-                      style: const TextStyle(fontSize: 11),
+                  Text(
+                    address,
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      text: avgPrice.toString(),
+                      style: TextStyle(color: Colors.black, fontSize: 11),
+                      children: <TextSpan>[
+                        TextSpan(text: '.0', style: TextStyle(fontSize: 11)),
+                        TextSpan(text: ' SAR ', style: TextStyle(fontSize: 11)),
+                        TextSpan(
+                            text: "Average Price",
+                            style: TextStyle(fontSize: 11)),
+                      ],
                     ),
                   ),
                   const Spacer(),

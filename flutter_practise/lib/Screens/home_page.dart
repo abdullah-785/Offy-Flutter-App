@@ -1,7 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_practise/Models/restaurants.dart';
+import 'package:flutter_practise/Models/users.dart';
 import 'package:flutter_practise/Screens/login.dart';
 import 'package:flutter_practise/Screens/restaurant_detail.dart';
 import 'package:flutter_practise/Screens/upload_resturant.dart';
@@ -21,6 +24,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final unfocusNode = FocusNode();
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  UserModel userModel = UserModel();
+  // String? role;
+
+  // CollectionReference userCollection =
+  //     FirebaseFirestore.instance.collection("users");
 
   PageController? pageViewController;
 
@@ -31,6 +40,23 @@ class _HomePageState extends State<HomePage> {
       : 0;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // Future<DocumentSnapshot> getUserDocument() async {
+  //   return await userCollection.doc(_auth.currentUser?.uid).get();
+  // }
+
+  // Future<void> fetchUserData() async {
+  //   try {
+  //     DocumentSnapshot userDocument = await getUserDocument();
+
+  //     if (userDocument.exists) {
+  //       role = userDocument.get('role');
+  //       print(role);
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   @override
   void initState() {
@@ -110,29 +136,74 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        'https://firebasestorage.googleapis.com/v0/b/flutterpractise-6898a.appspot.com/o/360_F_324739203_keeq8udvv0P2h1MLYJ0GLSlTBagoXS48.jpg?alt=media&token=e86757df-5cc1-4462-91e2-264d814e2e12&_gl=1*1dt0f0l*_ga*MTIxMjcyNzYwNy4xNjk4MTI2MzMz*_ga_CW55HF8NVT*MTY5ODI5ODkyMS4xMS4xLjE2OTgyOTg5NDAuNDEuMC4w',
-                                        width: 300,
-                                        height: 200,
-                                        fit: BoxFit.cover,
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            "https://firebasestorage.googleapis.com/v0/b/flutterpractise-6898a.appspot.com/o/360_F_324739203_keeq8udvv0P2h1MLYJ0GLSlTBagoXS48.jpg?alt=media&token=e86757df-5cc1-4462-91e2-264d814e2e12&_gl=1*1dt0f0l*_ga*MTIxMjcyNzYwNy4xNjk4MTI2MzMz*_ga_CW55HF8NVT*MTY5ODI5ODkyMS4xMS4xLjE2OTgyOTg5NDAuNDEuMC4w",
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
+                                              // colorFilter: ColorFilter.mode(
+                                              //     Colors.red, BlendMode.)
+                                            ),
+                                          ),
+                                        ),
+                                        placeholder: (context, url) => BlurHash(
+                                            hash:
+                                                "LYQ+AplVV=nj%%jDi]tR%KM}o#tl"),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
                                       ),
                                     ),
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        'https://firebasestorage.googleapis.com/v0/b/flutterpractise-6898a.appspot.com/o/great-for-sharing.jpg?alt=media&token=293f7b33-ee27-4f90-a7fc-e04e33d785c5&_gl=1*1330j4f*_ga*MTIxMjcyNzYwNy4xNjk4MTI2MzMz*_ga_CW55HF8NVT*MTY5ODI5ODkyMS4xMS4xLjE2OTgyOTg5OTEuNTEuMC4w',
-                                        width: 300,
-                                        height: 200,
-                                        fit: BoxFit.cover,
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudHxlbnwwfHwwfHx8MA%3D%3D",
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
+                                              // colorFilter: ColorFilter.mode(
+                                              //     Colors.red, BlendMode.)
+                                            ),
+                                          ),
+                                        ),
+                                        placeholder: (context, url) => BlurHash(
+                                            hash:
+                                                "LYQ+AplVV=nj%%jDi]tR%KM}o#tl"),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
                                       ),
                                     ),
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVzdGF1cmFudHxlbnwwfHwwfHx8MA%3D%3D',
-                                        width: 300,
-                                        height: 200,
-                                        fit: BoxFit.cover,
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            "https://firebasestorage.googleapis.com/v0/b/flutterpractise-6898a.appspot.com/o/great-for-sharing.jpg?alt=media&token=293f7b33-ee27-4f90-a7fc-e04e33d785c5&_gl=1*1k6drpd*_ga*MTIxMjcyNzYwNy4xNjk4MTI2MzMz*_ga_CW55HF8NVT*MTY5OTAwNTczNi4yNy4xLjE2OTkwMDU3ODIuMTQuMC4w",
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
+                                              // colorFilter: ColorFilter.mode(
+                                              //     Colors.red, BlendMode.)
+                                            ),
+                                          ),
+                                        ),
+                                        placeholder: (context, url) => BlurHash(
+                                            hash:
+                                                "LYQ+AplVV=nj%%jDi]tR%KM}o#tl"),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
                                       ),
                                     ),
                                   ],
@@ -185,17 +256,23 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            UploadRestaurant()));
+                                            const UploadRestaurant()));
                               },
-                              child: Text(
+                              child: const Text(
                                 "Categories",
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.w600),
                               ),
                             ),
-                            Text(
-                              "View All",
-                              style: TextStyle(fontSize: 12),
+                            GestureDetector(
+                              onTap: () {
+                                // the logout function
+                                logout(context);
+                              },
+                              child: const Text(
+                                "View All",
+                                style: TextStyle(fontSize: 12),
+                              ),
                             ),
                           ],
                         ),
@@ -255,6 +332,7 @@ class _HomePageState extends State<HomePage> {
                         StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
                               .collection('Restaurants')
+                              .where('restOrCoffee', isEqualTo: "Restaurant")
                               .snapshots(),
                           builder: (BuildContext context,
                               AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -279,7 +357,7 @@ class _HomePageState extends State<HomePage> {
 
                             return SizedBox(
                               width: MediaQuery.of(context).size.width * 1,
-                              height: 120,
+                              height: 135,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: restaurants.length,
@@ -309,6 +387,9 @@ class _HomePageState extends State<HomePage> {
                                           restaurants[index].image.toString(),
                                       rating:
                                           restaurants[index].level.toString(),
+                                      avgPrice: restaurants[index]
+                                          .avgPrice
+                                          .toString(),
                                     ),
                                   );
                                 },
@@ -319,7 +400,7 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(
                           height: 30,
                         ),
-                        Row(
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
@@ -335,7 +416,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                         StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
-                              .collection('CoffeeShop')
+                              .collection('Restaurants')
+                              .where('restOrCoffee', isEqualTo: "Coffee Shop")
                               .snapshots(),
                           builder: (BuildContext context,
                               AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -390,6 +472,9 @@ class _HomePageState extends State<HomePage> {
                                           restaurants[index].image.toString(),
                                       rating:
                                           restaurants[index].level.toString(),
+                                      avgPrice: restaurants[index]
+                                          .avgPrice
+                                          .toString(),
                                     ),
                                   );
                                 },
@@ -407,5 +492,11 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  Future<void> logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => Login()));
   }
 }

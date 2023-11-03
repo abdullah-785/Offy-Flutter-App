@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_practise/Screens/home_page.dart';
 import 'package:flutter_practise/Screens/signup.dart';
+import 'package:flutter_practise/Screens/upload_resturant.dart';
+import 'package:flutter_practise/utils/colors.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -11,8 +14,15 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,13 +109,10 @@ class _LoginState extends State<Login> {
                             email: _emailController.text,
                             password: _passwordController.text)
                         .then((value) => {
+                              fetchUserData(),
                               setState(() {
                                 isLoading = true;
                               }),
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const HomePage()))
                             });
                   } catch (e) {
                     print(e);
@@ -118,8 +125,8 @@ class _LoginState extends State<Login> {
                 },
                 child: isLoading
                     ? CircularProgressIndicator(
-                        color: Colors.white,
                         strokeWidth: 2,
+                        color: Colors.white,
                       )
                     : Text(
                         'Login',
@@ -140,5 +147,35 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  CollectionReference userCollection =
+      FirebaseFirestore.instance.collection("users");
+
+  String? role;
+
+  Future<DocumentSnapshot> getUserDocument() async {
+    return await userCollection.doc(_auth.currentUser?.uid).get();
+  }
+
+  Future<void> fetchUserData() async {
+    try {
+      DocumentSnapshot userDocument = await getUserDocument();
+
+      if (userDocument.exists) {
+        role = userDocument.get('role');
+        if (role == "admin") {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => UploadRestaurant()));
+        } else if (role == "user") {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
+        }
+
+        print(role);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

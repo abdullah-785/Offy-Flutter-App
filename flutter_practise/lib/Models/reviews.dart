@@ -3,7 +3,7 @@ import 'package:flutter_practise/Models/users.dart';
 
 class Review {
   String? review;
-  String? date;
+  DateTime? date;
   DocumentReference? relatedGivingReviewUser;
   DocumentReference? relatedGettingReviewUser;
 
@@ -16,7 +16,7 @@ class Review {
   factory Review.fromMap(map) {
     return Review(
       review: map['review'],
-      date: map['date'],
+      // date: map['date'],
       // relatedGettingReviewUser: map['relatedGettingReviewUser'],
       // relatedGivingReviewUser: map['relatedGivingReviewUser'],
     );
