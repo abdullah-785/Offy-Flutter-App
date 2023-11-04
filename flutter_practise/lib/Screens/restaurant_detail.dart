@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_practise/Components/post_review.dart';
 import 'package:flutter_practise/Models/restaurants.dart';
 import 'package:flutter_practise/Models/reviews.dart';
+import 'package:flutter_practise/Screens/table_booking.dart';
 import 'package:flutter_practise/Testing/google_map.dart';
 import 'package:flutter_practise/Widgets/customer_review_widget.dart';
 import 'package:flutter_practise/Widgets/simple_google_map.dart';
@@ -33,6 +34,8 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
       child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
+              centerTitle: true,
+              foregroundColor: Colors.black,
               elevation: 0,
               backgroundColor: Colors.white,
               title: const Text(
@@ -304,12 +307,20 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                           decoration: BoxDecoration(
                               color: Colors.black,
                               borderRadius: BorderRadius.circular(10)),
-                          child: const Text(
-                            "Book a table",
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TableBooking()));
+                            },
+                            child: Text(
+                              "Book a table",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
+                            ),
                           ),
                         ),
                         Container(

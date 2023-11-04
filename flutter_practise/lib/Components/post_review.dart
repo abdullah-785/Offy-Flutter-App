@@ -81,12 +81,12 @@ class _PostReviewState extends State<PostReview> {
                     // DateFormat.yMMMEd().format(DateTime.now());
 
                     Review reviewDoc = Review();
-                    // String currentDate =
-                    //     DateFormat.yMMMEd().format(DateTime.now());
+                    String currentDate =
+                        DateFormat.yMMMEd().format(DateTime.now());
                     reviewDoc.review = _reviewController.text;
                     reviewDoc.relatedGivingReviewUser = userDocumentRef;
                     reviewDoc.relatedGettingReviewUser = widget.resturantsRef;
-                    // reviewDoc.date = currentDate as DateTime?;
+                    reviewDoc.date = currentDate as DateTime?;
 
                     FirebaseFirestore.instance
                         .collection("Review")

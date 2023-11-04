@@ -94,10 +94,10 @@ class RestaurantCard extends StatelessWidget {
                   RichText(
                     text: TextSpan(
                       text: avgPrice.toString(),
-                      style: TextStyle(color: Colors.black, fontSize: 11),
+                      style: TextStyle(color: Colors.black, fontSize: 10),
                       children: <TextSpan>[
-                        TextSpan(text: '.0', style: TextStyle(fontSize: 11)),
-                        TextSpan(text: ' SAR ', style: TextStyle(fontSize: 11)),
+                        TextSpan(text: '.0', style: TextStyle(fontSize: 10)),
+                        TextSpan(text: ' SAR ', style: TextStyle(fontSize: 10)),
                         TextSpan(
                             text: "Average Price",
                             style: TextStyle(fontSize: 11)),
@@ -120,24 +120,26 @@ class RestaurantCard extends StatelessWidget {
                           children: [
                             const Icon(
                               Icons.star_border,
-                              size: 16,
+                              size: 14,
                               color: Colors.yellow,
                             ),
                             Text(
                               rating,
-                              style: const TextStyle(fontSize: 12),
+                              style: const TextStyle(fontSize: 9),
                             ),
                           ],
                         ),
-                        const Row(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Icon(
                               Icons.av_timer_rounded,
-                              size: 16,
+                              size: 14,
                               color: Colors.yellow,
                             ),
                             Text("3 hours 3 min away",
-                                style: TextStyle(fontSize: 12)),
+                                style: TextStyle(fontSize: 9)),
                           ],
                         )
                       ],

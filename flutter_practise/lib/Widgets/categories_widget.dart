@@ -19,7 +19,7 @@ class CategoriesWidget extends StatelessWidget {
           height: 60,
           decoration: BoxDecoration(
               color: boxColor.withOpacity(0.7),
-              borderRadius: BorderRadius.circular(20)),
+              borderRadius: BorderRadius.circular(50)),
           child: Icon(
             iconBtn,
             size: 28,
