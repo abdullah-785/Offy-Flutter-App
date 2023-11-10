@@ -25,6 +25,8 @@ class UploadRestaurant extends StatefulWidget {
 class _UploadRestaurantState extends State<UploadRestaurant> {
   File? file;
   String? imageUrl;
+  Future<TimeOfDay?>? selectedTime;
+  String time = "-";
 
   FirebaseAuth _auth = FirebaseAuth.instance;
   TextEditingController _nameController = TextEditingController();
@@ -35,10 +37,12 @@ class _UploadRestaurantState extends State<UploadRestaurant> {
   TextEditingController _openingTimeController = TextEditingController();
   TextEditingController _closingTimeController = TextEditingController();
   bool isLoading = false;
+  List<String> restOrCoffeeShop = ['Restaurant', 'Coffee Shop'];
 
   @override
   Widget build(BuildContext context) {
     final fileName = file != null ? basename(file!.path) : "No file Selected";
+    String drowDownValue = restOrCoffeeShop.first;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(left: 12.0, right: 12, top: 40),
@@ -125,18 +129,60 @@ class _UploadRestaurantState extends State<UploadRestaurant> {
               const SizedBox(
                 height: 15,
               ),
-              TextFormField(
-                controller: _typeController,
-                decoration: const InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                    labelText: 'Type',
-                    hintText: 'Restaurant/Coffee Shope'),
-              ),
+
+              Container(
+                  // height: 50.0,
+                  width: MediaQuery.of(context).size.width * 0.94,
+                  // decoration: BoxDecoration(border:),
+                  child: DropdownButton(
+                    value: drowDownValue,
+                    icon: Icon(Icons.arrow_downward),
+                    iconSize: 18,
+                    elevation: 16,
+                    isExpanded: true,
+                    style: TextStyle(color: Colors.grey, fontSize: 16.0),
+                    // underline: Container(
+                    //   height: 2,
+                    //   color: Colors.grey,
+                    // ),
+                    onChanged: (newValue) {
+                      setState(() {
+                        drowDownValue = newValue!;
+                      });
+                    },
+                    items: restOrCoffeeShop
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  )),
+              // TextFormField(
+              //   controller: _typeController,
+              //   decoration: const InputDecoration(
+              //       contentPadding:
+              //           EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+              //       border: OutlineInputBorder(
+              //           borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              //       labelText: 'Type',
+              //       hintText: 'Restaurant/Coffee Shope'),
+              // ),
               const SizedBox(
-                height: 15,
+                height: 30,
+              ),
+
+              GestureDetector(
+                onTap: () {
+                  // showDialogTimePicker(context);
+                },
+                child: Container(
+                  height: 45,
+                  width: MediaQuery.of(context).size.width * .94,
+                  decoration:
+                      BoxDecoration(border: Border.all(color: Colors.grey)),
+                  child: Text("$selectedTime"),
+                ),
               ),
               TextFormField(
                 controller: _openingTimeController,
@@ -230,6 +276,7 @@ class _UploadRestaurantState extends State<UploadRestaurant> {
     );
   }
 
+  //The and
   Future selectFile() async {
     final result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
